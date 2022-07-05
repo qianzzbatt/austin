@@ -2,6 +2,7 @@ package com.java3y.austin.controller;
 
 import com.java3y.austin.handler.SmsHandler;
 import com.java3y.austin.pojo.TaskInfo;
+import com.java3y.austin.vo.BasicResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,11 +23,15 @@ public class SendController {
      * @return
      */
     @GetMapping("/sendSms")
-    public boolean sendSms(String phone,String content,Long messageTemplateId ) {
+    public BasicResultVO<Void> sendSms(String phone, String content, Long messageTemplateId ) {
 
         TaskInfo taskInfo = TaskInfo.builder().receiver(new HashSet<>(Arrays.asList(phone.split(","))))
                 .content(content).messageTemplateId(messageTemplateId).build();
-        return smsHandler.doHandler(taskInfo);
+        if (smsHandler.doHandler(taskInfo)) {
+            return BasicResultVO.success("发送信息成功");
+        }
+
+        return BasicResultVO.fail();
     }
 
 }

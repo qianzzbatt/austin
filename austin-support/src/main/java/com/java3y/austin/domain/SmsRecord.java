@@ -19,6 +19,9 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+/**
+ * 短信（回执和发送记录）
+ */
 public class SmsRecord {
 
     @Id
