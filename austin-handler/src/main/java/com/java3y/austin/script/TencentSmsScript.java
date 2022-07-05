@@ -1,23 +1,24 @@
 package com.java3y.austin.script;
 
-import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ArrayUtil;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Throwables;
+import com.java3y.austin.domain.SmsRecord;
+import com.java3y.austin.enums.SmsStatus;
 import com.java3y.austin.pojo.SmsParam;
-import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
-import com.tencentcloudapi.common.profile.ClientProfile;
-import com.tencentcloudapi.common.profile.HttpProfile;
 import com.tencentcloudapi.sms.v20210111.SmsClient;
 import com.tencentcloudapi.sms.v20210111.models.SendSmsRequest;
 import com.tencentcloudapi.sms.v20210111.models.SendSmsResponse;
-import lombok.Getter;
+import com.tencentcloudapi.sms.v20210111.models.SendStatus;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author 3y
@@ -28,7 +29,8 @@ import javax.annotation.Resource;
  */
 @Service
 @Slf4j
-public class TencentSmsScript {
+public class TencentSmsScript implements SmsScript{
+    private static final Integer PHONE_NUM = 11;
 
     @Resource
     private SmsClient smsClient;
@@ -36,22 +38,12 @@ public class TencentSmsScript {
     @Resource
     private SendSmsRequest smsRequest;
 
-    public String send(SmsParam smsParam) {
+    @Override
+    public List<SmsRecord> send(SmsParam smsParam) {
         try {
-
-            /**
-             * 组装发送短信参数
-             */
-            String[] phoneNumberSet = smsParam.getPhones().toArray(new String[smsParam.getPhones().size() - 1]);
-            smsRequest.setPhoneNumberSet(phoneNumberSet);
-            String[] templateParamSet = {smsParam.getContent()};
-            smsRequest.setTemplateParamSet(templateParamSet);
-
-            /**
-             * 请求，返回结果
-             */
-            SendSmsResponse resp = smsClient.SendSms(smsRequest);
-            return SendSmsResponse.toJsonString(resp);
+            assembleReq(smsParam);
+            SendSmsResponse response = smsClient.SendSms(smsRequest);
+            return assembleSmsRecord(smsParam,response);
 
         } catch (TencentCloudSDKException e) {
             log.error("send tencent sms fail!{},params:{}",
@@ -60,4 +52,53 @@ public class TencentSmsScript {
         }
 
     }
+
+
+    /**
+     * 组装发送短信参数
+     */
+    private void assembleReq(SmsParam smsParam) {
+        String[] phoneNumberSet1 = smsParam.getPhones().toArray(new String[smsParam.getPhones().size() - 1]);
+        smsRequest.setPhoneNumberSet(phoneNumberSet1);
+        String[] templateParamSet1 = {smsParam.getContent()};
+        smsRequest.setTemplateParamSet(templateParamSet1);
+    }
+
+    /**
+     * 封装返回结果
+     * @param smsParam
+     * @param response
+     * @return
+     */
+    private List<SmsRecord> assembleSmsRecord(SmsParam smsParam, SendSmsResponse response) {
+        if (response == null || ArrayUtil.isEmpty(response.getSendStatusSet())) {
+            return null;
+        }
+
+        List<SmsRecord> smsRecordList = new ArrayList<>();
+
+        for (SendStatus sendStatus : response.getSendStatusSet()) {
+            //返回的手机号是+86格式的，所以要切割一下
+            String phone = new StringBuilder(new StringBuilder(sendStatus.getPhoneNumber())
+                    .reverse().substring(0, PHONE_NUM)).reverse().toString();
+
+            SmsRecord smsRecord = SmsRecord.builder()
+                    .sendDate(Integer.valueOf(DateUtil.format(new Date(), "yyyyMMdd")))
+                    .messageTemplateId(smsParam.getMessageTemplateId())
+                    .phone(Long.valueOf(phone))
+                    .supplierId(smsParam.getSupplierId())
+                    .supplierName(smsParam.getSupplierName())
+                    .seriesId(sendStatus.getSerialNo())
+                    .chargingNum(Math.toIntExact(sendStatus.getFee()))
+                    .status(SmsStatus.SEND_SUCCESS.getCode())
+                    .reportContent(sendStatus.getCode())
+                    .created(Math.toIntExact(DateUtil.currentSeconds()))
+                    .updated(Math.toIntExact(DateUtil.currentSeconds()))
+                    .build();
+
+            smsRecordList.add(smsRecord);
+        }
+        return smsRecordList;
+    }
+
 }

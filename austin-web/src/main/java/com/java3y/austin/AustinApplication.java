@@ -27,7 +27,7 @@ public class AustinApplication {
      * @return
      */
     @GetMapping("/sendSms")
-    public String sendSms(String phone,String content) {
+    public void sendSms(String phone,String content) {
 
         /**
          * 这里的content指的是模板占位符的参数值
@@ -36,9 +36,6 @@ public class AustinApplication {
                 .phones(new HashSet<>(Arrays.asList(phone.split(","))))
                 .content(content)
                 .build();
-
-        return tencentSmsScript.send(smsParam);
-
     }
 
 }
