@@ -1,31 +1,31 @@
 package com.java3y.austin.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 /**
  * 短信（回执和发送记录）
+ * @author admin
+ * @author admin
+ * @author admin
  * @author admin
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 /**
+ * @author admin
  * 短信（回执和发送记录）
  */
 public class SmsRecord {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**

@@ -1,14 +1,11 @@
 package com.java3y.austin.domain;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 
 /**
  * @author 3y
@@ -18,17 +15,49 @@ import javax.persistence.Id;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-public class MessageTemplate {
+@TableName("message_template")
+public class MsgTemplate {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
      * 模板标题
      */
     private String name;
+
+    /**
+     * 业务方
+     */
+    private String proposer;
+
+    /**
+     * 发送的Id类型
+     */
+    private Integer idType;
+
+    /**
+     * 消息类型
+     */
+    private Integer msgType;
+
+    /**
+     * 是否夜间屏蔽
+     * 0:不屏蔽
+     * 1：屏蔽
+     * 2:屏蔽（次日早上9点发送）
+     */
+    private Integer isNightShield;
+
+    /**
+     * 模板类型
+     */
+    private Integer templateType;
+
+    /**
+     * 发送渠道
+     */
+    private Integer sendChannel;
 
     /**
      * 审核状态
@@ -44,26 +73,6 @@ public class MessageTemplate {
      * 消息状态
      */
     private Integer msgStatus;
-
-    /**
-     * 发送的Id类型
-     */
-    private Integer idType;
-
-    /**
-     * 发送渠道
-     */
-    private Integer sendChannel;
-
-    /**
-     * 模板类型
-     */
-    private Integer templateType;
-
-    /**
-     * 消息类型
-     */
-    private Integer msgType;
 
     /**
      * 推送消息的时间
@@ -103,11 +112,6 @@ public class MessageTemplate {
     private String team;
 
     /**
-     * 业务方
-     */
-    private String proposer;
-
-    /**
      * 是否删除
      * 0：已删除
      * 1：删除
@@ -128,13 +132,5 @@ public class MessageTemplate {
      * 消息去重时间 单位小时
      */
     private Integer deduplicationTime;
-
-    /**
-     * 是否夜间屏蔽
-     * 0:不屏蔽
-     * 1：屏蔽
-     */
-    private Integer isNightShield;
-
 
 }

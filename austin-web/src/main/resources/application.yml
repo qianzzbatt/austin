@@ -1,25 +1,25 @@
 # HTTP 连接配置
 ok:
-    http:
-        connect-timeout: 30
-        keep-alive-duration: 300
-        max-idle-connections: 200
-        read-timeout: 30
-        write-timeout: 30
+  http:
+    connect-timeout: 30
+    keep-alive-duration: 300
+    max-idle-connections: 200
+    read-timeout: 30
+    write-timeout: 30
 # 腾讯云账号相关的信息配置
 tencent:
-    sms:
-        account:
-            secretId:
-            secretKey:
-            signName:
-            smsSdkAppId:
-            templateId:
+  sms:
+    account:
+      secretId: AKIDzoSqxnMgjW1GEvKTM2SbU6QTHocBTUEh
+      secretKey: DAqFNEo7A0Zrsc6JEsHOEn68tMZVAalg
+      signName: 愿世界没有脱发公众号
+      smsSdkAppId: 1400617195
+      templateId: 1258822
 
 # 数据库相关的信息配置
 spring:
-    datasource:
-        url:
-        username:
-        password:
-        driver-class-name:
+  datasource:
+    url: jdbc:mysql:///asutin?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: admin
+    driver-class-name: com.mysql.jdbc.Driver

@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Arrays;
 import java.util.HashSet;
 
+/**
+ * @author admin
+ */
 @RestController
 public class SendController {
-
 
     @Autowired
     private SmsHandler smsHandler;

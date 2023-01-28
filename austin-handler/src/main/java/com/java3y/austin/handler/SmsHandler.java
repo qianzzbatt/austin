@@ -37,7 +37,7 @@ public class SmsHandler implements Handler {
         List<SmsRecord> recordList = smsScript.send(smsParam);
 
         if (CollUtil.isNotEmpty(recordList)) {
-            smsRecordDao.saveAll(recordList);
+//            smsRecordDao.save(recordList);
             return true;
         }
         return false;

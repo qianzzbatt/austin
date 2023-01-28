@@ -7,6 +7,7 @@ import java.util.Set;
 
 /**
  * 发送任务信息
+ * @author admin
  */
 @Data
 @Builder
