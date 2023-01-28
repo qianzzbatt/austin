@@ -1,12 +1,14 @@
 package com.java3y.austin.dao;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.java3y.austin.config.EasyBaseMapper;
 import com.java3y.austin.domain.SmsRecord;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * @author admin
  */
-public interface SmsRecordDao extends BaseMapper<SmsRecord> {
+@Mapper
+public interface SmsRecordDao extends EasyBaseMapper<SmsRecord> {
 
 
 }
